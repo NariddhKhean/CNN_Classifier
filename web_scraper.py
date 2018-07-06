@@ -1,6 +1,9 @@
 import config
 from google_images_download import google_images_download
 
+
+### WEB SCRAPE ###
+
 # Search Terms
 keywords = ",".join(config.search_terms)
 
