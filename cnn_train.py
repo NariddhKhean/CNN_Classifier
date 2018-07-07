@@ -9,7 +9,7 @@ from keras.optimizers import RMSprop
 import os, sys
 
 
-### CONFIGURE ###
+### CONFIGURE TENSORFLOW ###
 
 # Error Messages
 tf.logging.set_verbosity(tf.logging.ERROR)
