@@ -22,25 +22,22 @@ backend.set_session(tf.Session(config = tf_config))
 
 ### DATASET ###
 
-# web_scraper.py currently scrapes images into folders titled with their labels.
-# TODO: Figure out a way to move around image files into training and validation.
-
 # Directories
-base_dir = config.output_dir
+base_dir = config.data_path
 training_dir = os.path.join(base_dir, "training")
 validation_dir = os.path.join(base_dir, "validation")
 
 # Training Directories
-training_a_dir = os.path.join(training_dir, config.search_terms_a)
-training_b_dir = os.path.join(training_dir, config.search_terms_b)
+training_a_dir = os.path.join(training_dir, config.search_terms_a[0])
+training_b_dir = os.path.join(training_dir, config.search_terms_b[0])
 
 # Validation Directories
-validation_a_dir = os.path.join(validation_dir, config.search_terms_a)
-validation_b_dir = os.path.join(validation_dir, config.search_terms_b)
+validation_a_dir = os.path.join(validation_dir, config.search_terms_a[0])
+validation_b_dir = os.path.join(validation_dir, config.search_terms_b[0])
 
 # Training Image List
-train_a_fnames = os.listdir(validation_a_dir)
-train_b_fnames = os.listdir(validation_b_dir)
+training_a_fnames = os.listdir(training_a_dir)
+training_b_fnames = os.listdir(training_b_dir)
 
 
 ### CNN MODEL ###
@@ -76,7 +73,9 @@ output = layers.Dense(1, activation = "sigmoid")(x)
 model = Model(img_input, output)
 
 # Optimiser
-model.compile(loss = "binary_crossentropy", optimizer = RMSprop(lr = 0.001), metrics = ["acc"])
+model.compile(loss = "binary_crossentropy",
+              optimizer = RMSprop(lr = 0.001),
+              metrics = ["acc"])
 
 # Review Model
 model_summary = True
