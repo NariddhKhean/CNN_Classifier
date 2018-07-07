@@ -9,7 +9,7 @@ from keras.optimizers import RMSprop
 import os, sys
 
 
-### CONFIGURE ###
+### CONFIGURE TENSORFLOW ###
 
 # Error Messages
 tf.logging.set_verbosity(tf.logging.ERROR)
@@ -22,8 +22,8 @@ backend.set_session(tf.Session(config = tf_config))
 
 ### DATASET ###
 
-# NOTE: web_scraper.py currently scrapes images into folders titled with their labels.
-# Figure out a way to move around image files into training and validation.
+# web_scraper.py currently scrapes images into folders titled with their labels.
+# TODO: Figure out a way to move around image files into training and validation.
 
 # Directories
 base_dir = config.output_dir
@@ -31,12 +31,12 @@ training_dir = os.path.join(base_dir, "training")
 validation_dir = os.path.join(base_dir, "validation")
 
 # Training Directories
-training_a_dir = os.path.join(training_dir, config.search_terms[0])
-training_b_dir = os.path.join(training_dir, config.search_terms[1])
+training_a_dir = os.path.join(training_dir, config.search_terms_a)
+training_b_dir = os.path.join(training_dir, config.search_terms_b)
 
 # Validation Directories
-validation_a_dir = os.path.join(validation_dir, config.search_terms[0])
-validation_b_dir = os.path.join(validation_dir, config.search_terms[1])
+validation_a_dir = os.path.join(validation_dir, config.search_terms_a)
+validation_b_dir = os.path.join(validation_dir, config.search_terms_b)
 
 # Training Image List
 train_a_fnames = os.listdir(validation_a_dir)
@@ -81,4 +81,4 @@ model.compile(loss = "binary_crossentropy", optimizer = RMSprop(lr = 0.001), met
 # Review Model
 model_summary = True
 if model_summary:
-	print(model.summary())
+    print(model.summary())
