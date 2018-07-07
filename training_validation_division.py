@@ -10,10 +10,10 @@ output_dir_a = config.output_dir_a
 output_dir_b = config.output_dir_b
 
 # Create Training Directories
-train_dir_a = os.path.join(config.data_path, "train", config.search_terms_a[0])
-train_dir_b = os.path.join(config.data_path, "train", config.search_terms_b[0])
-os.makedirs(train_dir_a)
-os.makedirs(train_dir_b)
+training_dir_a = os.path.join(config.data_path, "training", config.search_terms_a[0])
+training_dir_b = os.path.join(config.data_path, "training", config.search_terms_b[0])
+os.makedirs(training_dir_a)
+os.makedirs(training_dir_b)
 
 # Create Validation Directories
 validation_dir_a = os.path.join(config.data_path, "validation", config.search_terms_a[0])
@@ -30,14 +30,14 @@ file_count_a = len(files_a)
 file_count_b = len(files_b)
 
 # Define Number of Files to Move
-train_file_count_a = round(config.training_factor * file_count_a)
-train_file_count_b = round(config.training_factor * file_count_b)
+training_file_count_a = round(config.training_factor * file_count_a)
+training_file_count_b = round(config.training_factor * file_count_b)
 
 # Move Training Files into Training Directories
-for i in range(train_file_count_a):
-    shutil.move(os.path.join(output_dir_a, files_a[i]), train_dir_a)
-for i in range(train_file_count_b):
-    shutil.move(os.path.join(output_dir_b, files_b[i]), train_dir_b)
+for i in range(training_file_count_a):
+    shutil.move(os.path.join(output_dir_a, files_a[i]), training_dir_a)
+for i in range(training_file_count_b):
+    shutil.move(os.path.join(output_dir_b, files_b[i]), training_dir_b)
 
 # Move Validation Files into Validation Directories
 for f in os.listdir(output_dir_a):
