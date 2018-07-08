@@ -20,14 +20,12 @@ arguments_a = {"keywords": keywords_a,
                "format": config.file_format,
                "output_directory": config.output_dir_a,
                "no_directory": True,
-               "no_numbering": True,
                "chromedriver": config.chromedriver_path}
 arguments_b = {"keywords": keywords_b,
                "limit": config.scrape_limit,
                "format": config.file_format,
                "output_directory": config.output_dir_b,
                "no_directory": True,
-               "no_numbering": True,
                "chromedriver": config.chromedriver_path}
 
 # Execute Web Scrape
