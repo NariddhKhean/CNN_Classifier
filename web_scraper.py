@@ -1,6 +1,7 @@
 import config
 
 from google_images_download import google_images_download
+from PIL import Image
 import os
 
 
@@ -33,4 +34,51 @@ arguments_b = {"keywords": keywords_b,
 response.download(arguments_a)
 response.download(arguments_b)
 
-### BUG: Currently downloading images that are unreadable, breaking cnn_train.py
+
+### CLEAN TRAINING DATA ###
+
+# Debug Statement
+print("Detecting corrupted images...")
+
+# Remove Unopenable Files in Directory "a"
+removed_a = 0
+for image in os.listdir(config.output_dir_a):
+    if image.endswith(".jpg"):
+        try:
+            im = Image.open(os.path.join(config.output_dir_a, image))
+            im.close()
+        except(OSError):
+            os.remove(os.path.join(config.output_dir_a, image))
+            removed_a += 1
+    else:
+        os.remove(os.path.join(config.output_dir_a, image))
+        removed_a += 1
+
+# Remove Unopenable Files in Directory "b"
+removed_b = 0
+for image in os.listdir(config.output_dir_b):
+    if image.endswith(".jpg"):
+        try:
+            im = Image.open(os.path.join(config.output_dir_b, image))
+            im.close()
+        except(OSError):
+            os.remove(os.path.join(config.output_dir_b, image))
+            removed_b += 1
+    else:
+        os.remove(os.path.join(config.output_dir_b, image))
+        removed_b += 1
+
+# Print Confirmation
+if removed_a + removed_b == 0:
+    print("No corrupted images.")
+elif removed_a + removed_b == 1:
+    print("Sucessfully removed 1 corrupted image.")
+else:
+    print("Sucessfully removed {} corrupted images.".format(removed_a + removed_b))
+
+
+### SUMMARY ###
+
+# Print Summary
+print("\nSucessfully web scraped {} images labelled '{}'.".format(len(os.listdir(config.output_dir_a)), config.search_terms_a[0]))
+print("\nSucessfully web scraped {} images labelled '{}'.".format(len(os.listdir(config.output_dir_b)), config.search_terms_b[0]))

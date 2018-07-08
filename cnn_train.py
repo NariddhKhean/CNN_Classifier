@@ -5,7 +5,7 @@ from keras import layers
 from keras import backend
 from keras.models import Model
 from keras.optimizers import RMSprop
-from keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
+from keras.preprocessing.image import ImageDataGenerator
 
 import os, sys, math
 
@@ -112,9 +112,9 @@ validation_generator = validation_datagen.flow_from_directory(validation_dir,
 ### TRAIN MODEL ###
 
 # Fit
-history = model.fit_generator(training_generator,
-                              steps_per_epoch = training_steps_per_epoch,
-                              epochs = config.epochs,
-                              validation_data = validation_generator,
-                              validation_steps = validation_steps_per_epoch,
-                              verbose = 1)
+model.fit_generator(training_generator,
+                    steps_per_epoch = training_steps_per_epoch,
+                    epochs = config.epochs,
+                    validation_data = validation_generator,
+                    validation_steps = validation_steps_per_epoch,
+                    verbose = 1)
