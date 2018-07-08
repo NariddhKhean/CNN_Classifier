@@ -48,3 +48,13 @@ for f in os.listdir(output_dir_b):
 # Remove Empty Output Directories
 os.rmdir(config.output_dir_a)
 os.rmdir(config.output_dir_b)
+
+
+### SUMMARY ###
+
+# Print Summary
+print("\nSummary:\n")
+print("Training images labelled '{}': {}".format(config.search_terms_a[0], training_file_count_a))
+print("Training images labelled '{}': {}".format(config.search_terms_b[0], training_file_count_b))
+print("Validation images labelled '{}': {}".format(config.search_terms_a[0], file_count_a - training_file_count_a))
+print("Validation images labelled '{}': {}".format(config.search_terms_b[0], file_count_b - training_file_count_b))

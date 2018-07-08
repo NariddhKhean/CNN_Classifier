@@ -5,7 +5,7 @@ import os
 
 # Search Terms
 search_terms_a = ["apples", "apple"]
-search_terms_b = ["oranges", "oranges"]
+search_terms_b = ["oranges", "orange"]
 
 # Output Directores
 user_path = os.path.expanduser("~")
@@ -20,7 +20,7 @@ chromedriver_path = os.path.join(user_path, "AppData", "Local", "Chromedriver" ,
 file_format = "jpg"
 
 # Scrape Limit
-scrape_limit = 150
+scrape_limit = 250
 
 
 ### DATASET DIVISION ###
