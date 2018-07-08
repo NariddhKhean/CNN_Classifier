@@ -5,8 +5,9 @@ from keras import layers
 from keras import backend
 from keras.models import Model
 from keras.optimizers import RMSprop
+from keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
 
-import os, sys
+import os, sys, math
 
 
 ### CONFIGURE TENSORFLOW ###
@@ -81,3 +82,39 @@ model.compile(loss = "binary_crossentropy",
 model_summary = True
 if model_summary:
     print(model.summary())
+
+
+### DATASET PREPROCESSING ###
+
+# Scale Pixel Values
+training_datagen = ImageDataGenerator(rescale = 1. / 255)
+validation_datagen = ImageDataGenerator(rescale = 1. / 255)
+
+# Steps per Epoch
+training_count_min = min(len(os.listdir(training_a_dir)), len(os.listdir(training_b_dir)))
+training_steps_per_epoch = math.floor(training_count_min / config.batch_size)
+validation_count_min = min(len(os.listdir(validation_a_dir)), len(os.listdir(validation_b_dir)))
+validation_steps_per_epoch = math.floor(validation_count_min / config.batch_size)
+
+# Flow Images in Batches
+training_generator = training_datagen.flow_from_directory(training_dir,
+                                                          target_size = (150, 150),
+                                                          batch_size = config.batch_size,
+                                                          class_mode = "binary")
+
+# Flow Validation Images in Batches
+validation_generator = validation_datagen.flow_from_directory(validation_dir,
+                                                              target_size = (150, 150),
+                                                              batch_size = config.batch_size,
+                                                              class_mode = "binary")
+
+
+### TRAIN MODEL ###
+
+# Fit
+history = model.fit_generator(training_generator,
+                              steps_per_epoch = training_steps_per_epoch,
+                              epochs = config.epochs,
+                              validation_data = validation_generator,
+                              validation_steps = validation_steps_per_epoch,
+                              verbose = 1)

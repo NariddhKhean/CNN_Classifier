@@ -23,9 +23,11 @@ scrape_limit = 20
 ### DATASET DIVISION ###
 
 # Training/Division Ratio
-training_factor = 0.6
+training_factor = 0.8
 
 
 ### CNN HYPERPARAMETERS ###
 
-# TODO
+# Training
+batch_size = 3
+epochs = 10
