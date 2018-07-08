@@ -32,3 +32,5 @@ arguments_b = {"keywords": keywords_b,
 # Execute Web Scrape
 response.download(arguments_a)
 response.download(arguments_b)
+
+### BUG: Currently downloading images that are unreadable, breaking cnn_train.py
