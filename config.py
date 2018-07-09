@@ -34,3 +34,6 @@ training_factor = 0.8
 # Training
 batch_size = 10
 epochs = 100
+
+# Trained Model
+model_dir = os.path.join(user_path, "Desktop", "model")
