@@ -37,3 +37,4 @@ epochs = 100
 
 # Trained Model
 model_dir = os.path.join(user_path, "Desktop", "model")
+model_name = "{}_vs_{}.h5".format(search_terms_a[0], search_terms_b[0])

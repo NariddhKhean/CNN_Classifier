@@ -120,4 +120,5 @@ model.fit_generator(training_generator,
                     verbose = 1)
 
 # Save Model
-model.save(os.path.join(config.model_dir, "trained_model.h5"))
+os.makedirs(config.model_dir)
+model.save(os.path.join(config.model_dir, config.model_name))
