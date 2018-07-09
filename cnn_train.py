@@ -7,7 +7,7 @@ from keras.models import Model
 from keras.optimizers import RMSprop
 from keras.preprocessing.image import ImageDataGenerator
 
-import os, sys, math
+import os, math
 
 
 ### CONFIGURE TENSORFLOW ###
@@ -111,10 +111,13 @@ validation_generator = validation_datagen.flow_from_directory(validation_dir,
 
 ### TRAIN MODEL ###
 
-# Fit
+# Fit Model
 model.fit_generator(training_generator,
                     steps_per_epoch = training_steps_per_epoch,
                     epochs = config.epochs,
                     validation_data = validation_generator,
                     validation_steps = validation_steps_per_epoch,
                     verbose = 1)
+
+# Save Model
+model.save(os.path.join(config.model_dir, "trained_model.h5"))
