@@ -33,7 +33,7 @@ def clean_web_scraped_data(output_directory, debugging=True):
 
     # Debugging: Start Message
     if debugging:
-        print('Detecting incompatible images in {}...'.format(output_directory))
+        print('\nDetecting incompatible images in {}...'.format(output_directory))
 
     # Remove Incompatible Files
     removed = 0
@@ -78,7 +78,6 @@ def scrape_and_clean(search_terms, output_directory, debugging=True):
     # Debugging: Summary
     if debugging:
         print('\nSuccessfully web scraped {} images labelled "{}".'.format(len(os.listdir(output_directory)), search_terms[0]))
-
 
 
 ### EXECUTE WEB SCRAPE AND CLEAN DATA ###

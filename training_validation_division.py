@@ -5,56 +5,43 @@ import os, shutil
 
 ### DATASET DIVISION ###
 
-# Web Scraped Data Directories
-output_dir_a = config.output_dir_a
-output_dir_b = config.output_dir_b
+def dataset_division(search_terms, output_directory, debugging=True):
 
-# Create Training Directories
-training_dir_a = os.path.join(config.data_path, "training", config.search_terms_a[0])
-training_dir_b = os.path.join(config.data_path, "training", config.search_terms_b[0])
-os.makedirs(training_dir_a)
-os.makedirs(training_dir_b)
+	# Debugging: Start Message
+	if debugging:
+		print('\nMoving files into training and validation directories...')
 
-# Create Validation Directories
-validation_dir_a = os.path.join(config.data_path, "validation", config.search_terms_a[0])
-validation_dir_b = os.path.join(config.data_path, "validation", config.search_terms_b[0])
-os.makedirs(validation_dir_a)
-os.makedirs(validation_dir_b)
+	# Create Training Directory
+	training_dir = os.path.join(config.data_path, 'training', search_terms[0])
+	os.makedirs(training_dir)
 
-# List Files in Output Directories
-files_a = os.listdir(output_dir_a)
-files_b = os.listdir(output_dir_b)
+	# Create Validation Directory
+	validation_dir = os.path.join(config.data_path, 'validation', search_terms[0])
+	os.makedirs(validation_dir)
 
-# Count Files in Output Directories
-file_count_a = len(files_a)
-file_count_b = len(files_b)
+	# List and Count Files in Output Directory
+	files = os.listdir(output_directory)
+	file_count = len(files)
+	training_file_count = round(config.training_factor * file_count)
 
-# Define Number of Files to Move
-training_file_count_a = round(config.training_factor * file_count_a)
-training_file_count_b = round(config.training_factor * file_count_b)
+	# Move Training Files into Training Directories
+	for i in range(training_file_count):
+		shutil.move(os.path.join(output_directory, files[i]), training_dir)
 
-# Move Training Files into Training Directories
-for i in range(training_file_count_a):
-    shutil.move(os.path.join(output_dir_a, files_a[i]), training_dir_a)
-for i in range(training_file_count_b):
-    shutil.move(os.path.join(output_dir_b, files_b[i]), training_dir_b)
+	# Move Validation Files into Validation Directories
+	for f in os.listdir(output_directory):
+		shutil.move(os.path.join(output_directory, f), validation_dir)
 
-# Move Validation Files into Validation Directories
-for f in os.listdir(output_dir_a):
-    shutil.move(os.path.join(output_dir_a, f), validation_dir_a)
-for f in os.listdir(output_dir_b):
-    shutil.move(os.path.join(output_dir_b, f), validation_dir_b)
+	# Remove Empty Output Directories
+	os.rmdir(output_directory)
 
-# Remove Empty Output Directories
-os.rmdir(config.output_dir_a)
-os.rmdir(config.output_dir_b)
+	# Debugging: Count and Confirmation
+	if debugging:
+		print('\nSuccessfully collected {} training images, and {} validation images, labelled "{}".'.format(training_file_count, file_count - training_file_count, search_terms[0]))
 
 
-### SUMMARY ###
 
-# Print Summary
-print("\nSummary:\n")
-print("Training images labelled '{}': {}".format(config.search_terms_a[0], training_file_count_a))
-print("Training images labelled '{}': {}".format(config.search_terms_b[0], training_file_count_b))
-print("Validation images labelled '{}': {}".format(config.search_terms_a[0], file_count_a - training_file_count_a))
-print("Validation images labelled '{}': {}".format(config.search_terms_b[0], file_count_b - training_file_count_b))
+### EXECUTE DATASET DIVISION ###
+
+dataset_division(config.search_terms_a, config.output_dir_a)
+dataset_division(config.search_terms_b, config.output_dir_b)
