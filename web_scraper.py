@@ -5,78 +5,83 @@ from PIL import Image
 import os
 
 
-### WEB SCRAPE ###
+### WEB SCRAPE FUNCTION ###
 
-# Search Terms
-keywords_a = ",".join(config.search_terms_a)
-keywords_b = ",".join(config.search_terms_b)
+def web_scrape(search_terms, output_directory):
 
-# Instantiate Class
-response = google_images_download.googleimagesdownload()
+    # Instantiate Class
+    response = google_images_download.googleimagesdownload()
 
-# Insert Variables into Arguments
-arguments_a = {"keywords": keywords_a,
-               "limit": config.scrape_limit,
-               "format": config.file_format,
-               "output_directory": config.output_dir_a,
-               "no_directory": True,
-               "chromedriver": config.chromedriver_path}
-arguments_b = {"keywords": keywords_b,
-               "limit": config.scrape_limit,
-               "format": config.file_format,
-               "output_directory": config.output_dir_b,
-               "no_directory": True,
-               "chromedriver": config.chromedriver_path}
+    # Format Keywords
+    keywords = ','.join(search_terms)
 
-# Execute Web Scrape
-response.download(arguments_a)
-response.download(arguments_b)
+    # Define Arguments
+    arguments = {'keywords': keywords,
+                 'limit': config.scrape_limit,
+                 'format': 'jpg',
+                 'output_directory': output_directory,
+                 'no_directory': True,
+                 'chromedriver': config.chromedriver_path}
+
+    # Execute Web Scrape
+    response.download(arguments)
 
 
-### CLEAN TRAINING DATA ###
+### CLEAN WEB SCRAPED DATA FUNCTION ###
 
-# Debug Statement
-print("Detecting corrupted images...")
+def clean_web_scraped_data(output_directory, debugging=True):
 
-# Remove Unopenable Files in Directory "a"
-removed_a = 0
-for image in os.listdir(config.output_dir_a):
-    if image.endswith(".jpg"):
-        try:
-            im = Image.open(os.path.join(config.output_dir_a, image))
-            im.close()
-        except(OSError):
-            os.remove(os.path.join(config.output_dir_a, image))
-            removed_a += 1
-    else:
-        os.remove(os.path.join(config.output_dir_a, image))
-        removed_a += 1
+    # Debugging: Start Message
+    if debugging:
+        print('Detecting incompatible images in {}...'.format(output_directory))
 
-# Remove Unopenable Files in Directory "b"
-removed_b = 0
-for image in os.listdir(config.output_dir_b):
-    if image.endswith(".jpg"):
-        try:
-            im = Image.open(os.path.join(config.output_dir_b, image))
-            im.close()
-        except(OSError):
-            os.remove(os.path.join(config.output_dir_b, image))
-            removed_b += 1
-    else:
-        os.remove(os.path.join(config.output_dir_b, image))
-        removed_b += 1
+    # Remove Incompatible Files
+    removed = 0
+    for image in os.listdir(output_directory):
+        if image.endswith('.jpg'):
 
-# Print Confirmation
-if removed_a + removed_b == 0:
-    print("No corrupted images.")
-elif removed_a + removed_b == 1:
-    print("Sucessfully removed 1 corrupted image.")
-else:
-    print("Sucessfully removed {} corrupted images.".format(removed_a + removed_b))
+            # Try Opening '.jpg' Files
+            try:
+                im = Image.open(os.path.join(output_directory, image))
+                im.close()
+
+            # Delete Unopenable Files
+            except(OSError):
+                os.remove(os.path.join(output_directory, image))
+                removed += 1
+
+        # Remove All Other File Types
+        else:
+            os.remove(os.path.join(output_directory, image))
+            removed =+1
+
+    # Debugging: Count and Confirmation
+    if debugging:
+        if removed == 0:
+            print('No incompatible images detected.')
+        elif removed == 1:
+            print('Successfully removed 1 incompatible image.')
+        else:
+            print('Successfully removed {} incompatible images.'.format(removed))
 
 
-### SUMMARY ###
+### SCRAPE AND CLEAN FUNCTION ###
 
-# Print Summary
-print("\nSucessfully web scraped {} images labelled '{}'.".format(len(os.listdir(config.output_dir_a)), config.search_terms_a[0]))
-print("\nSucessfully web scraped {} images labelled '{}'.".format(len(os.listdir(config.output_dir_b)), config.search_terms_b[0]))
+def scrape_and_clean(search_terms, output_directory, debugging=True):
+
+    # Web Scrape
+    web_scrape(search_terms, output_directory)
+
+    # Clean Web Scraped Data
+    clean_web_scraped_data(output_directory, debugging)
+
+    # Debugging: Summary
+    if debugging:
+        print('\nSuccessfully web scraped {} images labelled "{}".'.format(len(os.listdir(output_directory)), search_terms[0]))
+
+
+
+### EXECUTE WEB SCRAPE AND CLEAN DATA ###
+
+scrape_and_clean(config.search_terms_a, config.output_dir_a)
+scrape_and_clean(config.search_terms_b, config.output_dir_b)

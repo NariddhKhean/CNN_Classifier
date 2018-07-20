@@ -16,9 +16,6 @@ output_dir_b = os.path.join(data_path, search_terms_b[0])
 # Chromedriver Path
 chromedriver_path = os.path.join(user_path, "AppData", "Local", "Chromedriver" ,"chromedriver.exe")
 
-# File Format
-file_format = "jpg"
-
 # Scrape Limit
 scrape_limit = 250
 
