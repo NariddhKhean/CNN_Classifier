@@ -14,7 +14,7 @@ import os, math
 
 # Error Messages
 tf.logging.set_verbosity(tf.logging.ERROR)
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "1"
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
 # TensorFlow Backend
 tf_config = tf.ConfigProto(gpu_options = tf.GPUOptions(allow_growth = True))
@@ -25,8 +25,8 @@ backend.set_session(tf.Session(config = tf_config))
 
 # Directories
 base_dir = config.data_path
-training_dir = os.path.join(base_dir, "training")
-validation_dir = os.path.join(base_dir, "validation")
+training_dir = os.path.join(base_dir, 'training')
+validation_dir = os.path.join(base_dir, 'validation')
 
 # Training Directories
 training_a_dir = os.path.join(training_dir, config.search_terms_a[0])
@@ -49,32 +49,32 @@ img_input = layers.Input(shape = (150, 150, 3))
 
 # Hidden Layer 1 (CONVOLUTIONAL)
 # [16 3 x 3 filters, with 2 x 2 max-pooling]
-x = layers.Conv2D(16, 3, activation = "relu")(img_input)
+x = layers.Conv2D(16, 3, activation = 'relu')(img_input)
 x = layers.MaxPooling2D(2)(x)
 
 # Hidden Layer 2 (CONVOLUTIONAL)
 # [32 3 x 3 filters, with 2 x 2 max-pooling]
-x = layers.Conv2D(32, 3, activation = "relu")(x)
+x = layers.Conv2D(32, 3, activation = 'relu')(x)
 x = layers.MaxPooling2D(2)(x)
 
 # Hidden Layer 3 (CONVOLUTIONAL)
 # [64 3 x 3 filters, with 2 x 2 max-pooling]
-x = layers.Conv2D(64, 3, activation = "relu")(x)
+x = layers.Conv2D(64, 3, activation = 'relu')(x)
 x = layers.MaxPooling2D(2)(x)
 
 # Hidden Layer 4 (FULLY CONNECTED)
 # [512 neurons]
 x = layers.Flatten()(x)
-x = layers.Dense(512, activation = "relu")(x)
+x = layers.Dense(512, activation = 'relu')(x)
 
 # Output Layer
-output = layers.Dense(1, activation = "sigmoid")(x)
+output = layers.Dense(1, activation = 'sigmoid')(x)
 
 # Create Model
 model = Model(img_input, output)
 
 # Optimiser
-model.compile(loss = "binary_crossentropy",
+model.compile(loss = 'binary_crossentropy',
               optimizer = RMSprop(lr = 0.001),
               metrics = ["acc"])
 
@@ -100,13 +100,13 @@ validation_steps_per_epoch = math.floor(validation_count_min / config.batch_size
 training_generator = training_datagen.flow_from_directory(training_dir,
                                                           target_size = (150, 150),
                                                           batch_size = config.batch_size,
-                                                          class_mode = "binary")
+                                                          class_mode = 'binary')
 
 # Flow Validation Images in Batches
 validation_generator = validation_datagen.flow_from_directory(validation_dir,
                                                               target_size = (150, 150),
                                                               batch_size = config.batch_size,
-                                                              class_mode = "binary")
+                                                              class_mode = 'binary')
 
 
 ### TRAIN MODEL ###

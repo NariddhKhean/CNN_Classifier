@@ -37,8 +37,8 @@ def dataset_division(search_terms, output_directory, debugging=True):
 
 	# Debugging: Count and Confirmation
 	if debugging:
-		print('\nSuccessfully collected {} training images, and {} validation images, labelled "{}".'.format(training_file_count, file_count - training_file_count, search_terms[0]))
-
+		print('\nSuccessfully collected {} training images, and {} validation images, labelled "{}".'
+			  .format(training_file_count, file_count - training_file_count, search_terms[0]))
 
 
 ### EXECUTE DATASET DIVISION ###
