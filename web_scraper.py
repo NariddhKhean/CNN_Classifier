@@ -2,12 +2,19 @@ import config
 
 from google_images_download import google_images_download
 from PIL import Image
-import os, shutil
+import shutil
+import os
 
 
 ### WEB SCRAPE FUNCTION ###
 
 def web_scrape(search_terms, output_directory):
+    """ Web scrapes images from Google Images.
+
+    Arguments:
+        search_terms     -- Array of strings to Google Image search.
+        output_directory -- String indicating the path for web scraped images.
+    """
 
     # Instantiate Class
     response = google_images_download.googleimagesdownload()
@@ -30,6 +37,12 @@ def web_scrape(search_terms, output_directory):
 ### CLEAN WEB SCRAPED DATA FUNCTION ###
 
 def clean_web_scraped_data(output_directory, debugging=True):
+    """ Removes all incompatible images for the neural network.
+
+    Arguments:
+        output_directory -- String indicating the path for web scraped images.
+        debugging        -- Boolean for showing summaries.
+    """
 
     # Debugging: Start Message
     if debugging:
@@ -68,6 +81,13 @@ def clean_web_scraped_data(output_directory, debugging=True):
 ### TRAINING/VALIDATION DATASET DIVISION ###
 
 def dataset_division(search_terms, output_directory, debugging=True):
+    """ Divides web scraped images into a training and validation dataset.
+
+    Arguements:
+        search_terms     -- Array of strings to Google Image search.
+        output_directory -- String indicating the path for web scraped images.
+        debugging        -- Boolean for showing summaries.
+    """
 
     # Debugging: Start Message
     if debugging:
@@ -106,6 +126,13 @@ def dataset_division(search_terms, output_directory, debugging=True):
 ### SCRAPE, CLEAN, AND DIVIDE FUNCTION ###
 
 def scrape_clean_divide(search_terms, output_directory, debugging=True):
+    """ Executes the web scrape, the cleaning, and the division.
+
+    Arguments:
+        search_terms     -- Array of strings to Google Image search.
+        output_directory -- String indicating the path for web scraped images.
+        debugging        -- Boolean for showing summaries.
+    """
 
     # Web Scrape
     web_scrape(search_terms, output_directory)
@@ -117,7 +144,8 @@ def scrape_clean_divide(search_terms, output_directory, debugging=True):
     dataset_division(search_terms, output_directory, debugging)
 
 
-### EXECUTE WEB SCRAPE AND CLEAN DATA ###
+### EXECUTE WEB SCRAPE, CLEAN, AND DIVIDE ###
 
-scrape_clean_divide(config.search_terms_a, config.output_dir_a)
-scrape_clean_divide(config.search_terms_b, config.output_dir_b)
+if __name__ == '__main__':
+    scrape_clean_divide(config.search_terms_a, config.output_dir_a)
+    scrape_clean_divide(config.search_terms_b, config.output_dir_b)
