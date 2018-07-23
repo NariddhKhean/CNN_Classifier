@@ -4,17 +4,19 @@
 
 Web scrape images based on two lists of _Google Images_ search queries, to generate a training dataset for binary classification. Train and save a deep convolutional neural network. Load the trained model to classify new images from an image's url.
 
-_"Apples are red with thin, edible skin, and white flesh. Whereas oranges are rounder, with orange-coloured skin and orange-coloured flesh. And the skin of an orange is generally discarded before consumption. You know what just happened there? I just compared apples to oranges. It can be done!"_
-
-<div style="text-align: right"> - Ronny Chieng. </div>
+> _"Apples are red with thin, edible skin, and white flesh. Whereas oranges are rounder, with orange-coloured skin and orange-coloured flesh. And the skin of an orange is generally discarded before consumption. You know what just happened there? I just compared apples to oranges. It can be done!"_
+>
+> \- Ronny Chieng.
 
 ## Getting Started
+
+### Prerequisites
+
 The main component of the web scraper is _[Google Images Download](https://github.com/hardikvasa/google-images-download)_; a small, ready-to-run program that downloads images from a Google Images search from keywords.
 > Note: If you would like to scrape more than 100 images per keyword, you'll also need to install _[Selenium](https://www.seleniumhq.org/)_ and _[Chromedriver](http://chromedriver.chromium.org/)_.
 
 The deep convolutional neural network was developed using _[Keras](https://keras.io/)_, a high-level neural network API, with _[TensorFlow](https://www.tensorflow.org/)_ as its backend.
 
-### Prerequisites
 To install _Google Images Download_ and _Keras_, you can use pip:
 ```
 pip install google_images_download
@@ -27,24 +29,55 @@ Alternatively, you can view their respective documentation for different install
 To install TensorFlow, it's best to refer to their [documentation](https://www.tensorflow.org/install/).
 > Note: To considerably speed up training time, install TensorFlow with GPU support.
 
-### Configuration
+## Usage
 
-`search_terms_a` = List of search terms considered to be the first of the two classifications.
+### `config.py`
 
-`search_terms_b` = List of search terms considered to be the second of the two classifications.
+| Variable            | Function                                                                      |
+| ------------------- | ----------------------------------------------------------------------------- |
+| `search_terms_a`    | List of search terms considered to be the first of the two classifications.   |
+| `search_terms_b`    | List of search terms considered to be the second of the two classifications.  |
+| `data_path`         | Path to directory for web scraped images.                                     |
+| `chromedriver_path` | Path to chromedriver.exe.                                                     |
+| `scrape_limit`      | Maximum number of images that the script will attempt to scrape.              |
+| `training_factor`   | Ratio for training images to validation images.                               |
+| `batch_size`        | Number of images within a batch.                                              |
+| `epochs`            | Number of times the model trains on each image.                               |
+| `target_size`       | Target pixel width and height of training images.                             |
+| `model_dir`         | Path to directory where the trained model is saved and loaded for prediction. |
 
-`data_path` = Path to directory for web scraped images.
+### `web_scraper.py`
 
-`chromedriver_path` = Path to chromedriver.exe.
+`web_scraper.py` iterates through the two lists of search terms defined in the configuration file, attempts to downloads the images, and saves it onto your drive.
 
-`scrape_limit` = Maximum number of images that the script will attempt to scrape.
+By default, `web_scraper.py` will attempt to web scrape 5000 images of two classes: 'apples' and 'oranges', and save it into a folder on your desktop, called 'data'.
 
-`training_factor` = Ratio for training images to validation images.
+### `training_validation_division.py`
 
-`batch_size` = Number of images within a batch.
+`training_validation_division.py` divides the downloaded images into training images and validation images, based on the `training_factor` defined in the configuration file.
 
-`epochs` = Number of times the model trains on each image.
+By default, the training data will be divided into 80% training images, and 20% validation images.
 
-`target_size` = Target pixel width and height of training images.
+### `cnn_train.py`
 
-`model_dir` = Path to directory where the trained model is saved and loaded for prediction.
+`cnn_train.py` preprocesses the training images, trains the deep convolutional neural network, and then saves the trained model.
+
+By default, these images, scaled to 150x150 pixels, will be fed into a deep convolutional neural network to be trained in batches of 10, for 100 epochs. After training, the model will be saved, again onto the user's desktop into a folder called 'model'.
+
+### `model_predict.py`
+
+`model_predict.py` loads the trained model based on the directory defined in the configuration file, to predict the class of a new image. This can be run using the shell command, where 'url' is the url of the image:
+```
+python model_predict.py url
+```
+For example:
+```
+python model_predict.py https://charliesfruitonline.com.au/wp-content/uploads/2017/01/apples.jpg
+```
+
+## To Do
+
+- Combine `web_scraper.py` and `training_validation_division.py` as it's unnecessary to have them separated.
+- Add the ability for `model_predict.py` to make predictions from images on the user's drive.
+- Add the ability for `model_predict.py` to make multiple predictions.
+- Add fail-safes for edge cases.
