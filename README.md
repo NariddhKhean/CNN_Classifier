@@ -48,15 +48,9 @@ To install TensorFlow, it's best to refer to their [documentation](https://www.t
 
 ### `web_scraper.py`
 
-`web_scraper.py` iterates through the two lists of search terms defined in the configuration file, attempts to downloads the images, and saves it onto your drive.
+`web_scraper.py` iterates through the two lists of search terms defined in the configuration file, attempts to downloads the images, and saves it onto your drive. The downloaded images are then divided into a training dataset and a validation dataset.
 
-By default, `web_scraper.py` will attempt to web scrape 5000 images of two classes: 'apples' and 'oranges', and save it into a folder on your desktop, called 'data'.
-
-### `training_validation_division.py`
-
-`training_validation_division.py` divides the downloaded images into training images and validation images, based on the `training_factor` defined in the configuration file.
-
-By default, the training data will be divided into 80% training images, and 20% validation images.
+By default, `web_scraper.py` will attempt to web scrape 5000 images of two classes: 'apples' and 'oranges', and save it into a folder on your desktop, called 'data'. The training data will be then divided into 80% training images, and 20% validation images.
 
 ### `cnn_train.py`
 
@@ -77,7 +71,6 @@ python model_predict.py https://charliesfruitonline.com.au/wp-content/uploads/20
 
 ## To Do
 
-- Combine `web_scraper.py` and `training_validation_division.py` as it's unnecessary to have them separated.
 - Add the ability for `model_predict.py` to make predictions from images on the user's drive.
 - Add the ability for `model_predict.py` to make multiple predictions.
 - Add fail-safes for edge cases.
