@@ -98,13 +98,13 @@ validation_steps_per_epoch = math.floor(validation_count_min / config.batch_size
 
 # Flow Images in Batches
 training_generator = training_datagen.flow_from_directory(training_dir,
-                                                          target_size = (150, 150),
+                                                          target_size = (config.target_size, config.target_size),
                                                           batch_size = config.batch_size,
                                                           class_mode = 'binary')
 
 # Flow Validation Images in Batches
 validation_generator = validation_datagen.flow_from_directory(validation_dir,
-                                                              target_size = (150, 150),
+                                                              target_size = (config.target_size, config.target_size),
                                                               batch_size = config.batch_size,
                                                               class_mode = 'binary')
 

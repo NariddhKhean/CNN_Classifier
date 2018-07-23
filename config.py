@@ -4,8 +4,8 @@ import os
 ### WEB SCRAPE ###
 
 # Search Terms
-search_terms_a = ["apples", "apple"]
-search_terms_b = ["oranges", "orange"]
+search_terms_a = ["apples", "apple", "apple fruit", "peeled apple", "cut apple"]
+search_terms_b = ["oranges", "orange", "orange fruit", "peeled orange", "cut orange"]
 
 # Output Directores
 user_path = os.path.expanduser("~")
@@ -17,7 +17,7 @@ output_dir_b = os.path.join(data_path, search_terms_b[0])
 chromedriver_path = os.path.join(user_path, "AppData", "Local", "Chromedriver" ,"chromedriver.exe")
 
 # Scrape Limit
-scrape_limit = 250
+scrape_limit = 5000
 
 
 ### DATASET DIVISION ###
@@ -31,6 +31,7 @@ training_factor = 0.8
 # Training
 batch_size = 10
 epochs = 100
+target_size = 150
 
 # Trained Model
 model_dir = os.path.join(user_path, "Desktop", "model")
