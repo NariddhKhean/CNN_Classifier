@@ -5,7 +5,9 @@ from keras.models import load_model
 
 from PIL import Image
 import numpy as np
-import os, sys, urllib
+import urllib
+import sys
+import os
 
 
 ### CONFIGURE TENSORFLOW ###
@@ -18,6 +20,11 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 ### PREDICT FUNCTION ###
 
 def predict(url):
+    """ Predicts the class of a new image.
+
+    Arguments:
+        url -- String indicating the url to an image for classification.
+    """
 
     # Load Trained Model
     model = load_model(os.path.join(config.model_dir, config.model_name))

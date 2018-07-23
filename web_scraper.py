@@ -78,7 +78,7 @@ def clean_web_scraped_data(output_directory, debugging=True):
             print('Successfully removed {} incompatible images.'.format(removed))
 
 
-### TRAINING/VALIDATION DATASET DIVISION ###
+### TRAINING/VALIDATION DATASET DIVISION FUNCTION ###
 
 def dataset_division(search_terms, output_directory, debugging=True):
     """ Divides web scraped images into a training and validation dataset.
@@ -143,8 +143,6 @@ def scrape_clean_divide(search_terms, output_directory, debugging=True):
     # Dataset Division
     dataset_division(search_terms, output_directory, debugging)
 
-
-### EXECUTE WEB SCRAPE, CLEAN, AND DIVIDE ###
 
 if __name__ == '__main__':
     scrape_clean_divide(config.search_terms_a, config.output_dir_a)
