@@ -1,7 +1,7 @@
 import os
 
 
-### WEB SCRAPE ###
+### WEB SCRAPE PARAMETERS ###
 
 # Search Terms
 search_terms_a = ["apples", "apple", "apple fruit", "peeled apple", "cut apple"]
@@ -18,9 +18,6 @@ chromedriver_path = os.path.join(user_path, "AppData", "Local", "Chromedriver" ,
 
 # Scrape Limit
 scrape_limit = 5000
-
-
-### DATASET DIVISION ###
 
 # Training/Division Ratio
 training_factor = 0.8
