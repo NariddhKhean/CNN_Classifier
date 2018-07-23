@@ -49,5 +49,5 @@ def predict(url):
         print("\nPrediction: '{}' with {:.3f}% certainty.".format(config.search_terms_b[0], prediction * 100))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     predict(sys.argv[1])
