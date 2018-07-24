@@ -1,7 +1,5 @@
 # CNN_Binary_Classifier
 
-*(Work in Progress: 95% complete)*
-
 Web scrape images based on two lists of _Google Images_ search queries, to generate a training dataset for binary classification. Train and save a deep convolutional neural network. Load the trained model to classify new images from an image's url.
 
 > _"Apples are red with thin, edible skin, and white flesh. Whereas oranges are rounder, with orange-coloured skin and orange-coloured flesh. And the skin of an orange is generally discarded before consumption. You know what just happened there? I just compared apples to oranges. It can be done!"_
@@ -68,9 +66,3 @@ For example:
 ```
 python model_predict.py https://charliesfruitonline.com.au/wp-content/uploads/2017/01/apples.jpg
 ```
-
-## To Do
-
-- Add the ability for `model_predict.py` to make predictions from images on the user's drive.
-- Add the ability for `model_predict.py` to make multiple predictions.
-- Add fail-safes for edge cases.
