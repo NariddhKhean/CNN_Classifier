@@ -1,4 +1,4 @@
-# CNN_Classifier
+# CNN_Binary_Classifier
 
 *(Work in Progress: 95% complete)*
 
