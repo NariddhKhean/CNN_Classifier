@@ -66,3 +66,8 @@ For example:
 ```
 python model_predict.py https://charliesfruitonline.com.au/wp-content/uploads/2017/01/apples.jpg
 ```
+
+## To Do
+
+- Look into Keras' [documentation](https://keras.io/preprocessing/image/) (`keras.preprocessing.image.flow_from_directory`) to turn binary classifier into multiclass classifier. Adjust `web_scraper.py`.
+- Utilise `ImageDataGenerator` shown used [here](https://www.learnopencv.com/image-classification-using-convolutional-neural-networks-in-keras/) to augment data.
