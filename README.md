@@ -33,14 +33,14 @@ To install TensorFlow, it's best to refer to their [documentation](https://www.t
 
 | Variable            | Function                                                                      |
 | ------------------- | ----------------------------------------------------------------------------- |
-| `search_terms_a`    | List of search terms considered to be the first of the two classifications.   |
-| `search_terms_b`    | List of search terms considered to be the second of the two classifications.  |
+| `search_terms`      | List of search terms to web scrape.                                           |
 | `data_path`         | Path to directory for web scraped images.                                     |
 | `chromedriver_path` | Path to chromedriver.exe.                                                     |
 | `scrape_limit`      | Maximum number of images that the script will attempt to scrape.              |
 | `training_factor`   | Ratio for training images to validation images.                               |
 | `batch_size`        | Number of images within a batch.                                              |
 | `epochs`            | Number of times the model trains on each image.                               |
+| `learning_rate`     | Learning rate for training the convolutional neural network.                  |
 | `target_size`       | Target pixel width and height of training images.                             |
 | `model_dir`         | Path to directory where the trained model is saved and loaded for prediction. |
 

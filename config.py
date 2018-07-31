@@ -23,10 +23,10 @@ training_factor = 0.8
 ### CNN HYPERPARAMETERS ###
 
 # Training
-learning_rate = 0.001
-target_size = 164
 batch_size = 16
 epochs = 16
+learning_rate = 0.001
+target_size = 164
 
 # Trained Model
 model_directory = os.path.join(user_path, 'Desktop', 'model')
