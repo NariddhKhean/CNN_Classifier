@@ -1,6 +1,6 @@
-# CNN_Binary_Classifier
+# CNN_Classifier
 
-Web scrape images based on two lists of _Google Images_ search queries, to generate a training dataset for binary classification. Train and save a deep convolutional neural network. Load the trained model to classify new images from an image's url.
+Web scrape images based on a lists of _Google Images_ search queries, to generate a training dataset for classification. Train and save a deep convolutional neural network. Load the trained model to classify new images from an image's url.
 
 > _"Apples are red with thin, edible skin, and white flesh. Whereas oranges are rounder, with orange-coloured skin and orange-coloured flesh. And the skin of an orange is generally discarded before consumption. You know what just happened there? I just compared apples to oranges. It can be done!"_
 >
@@ -46,15 +46,11 @@ To install TensorFlow, it's best to refer to their [documentation](https://www.t
 
 ### `web_scraper.py`
 
-`web_scraper.py` iterates through the two lists of search terms defined in the configuration file, attempts to downloads the images, and saves it onto your drive. The downloaded images are then divided into a training dataset and a validation dataset.
-
-By default, `web_scraper.py` will attempt to web scrape 5000 images of two classes: 'apples' and 'oranges', and save it into a folder on your desktop, called 'data'. The training data will be then divided into 80% training images, and 20% validation images.
+`web_scraper.py` iterates through the list of search terms defined in the configuration file, attempts to downloads the images, and saves it onto your drive. The downloaded images are then divided into a training dataset and a validation dataset.
 
 ### `cnn_train.py`
 
-`cnn_train.py` preprocesses the training images, trains the deep convolutional neural network, and then saves the trained model.
-
-By default, these images, scaled to 150x150 pixels, will be fed into a deep convolutional neural network to be trained in batches of 10, for 100 epochs. After training, the model will be saved, again onto the user's desktop into a folder called 'model'.
+`cnn_train.py` preprocesses the training images, trains the deep convolutional neural network, and then saves the trained model. After training, the model will be saved, again onto the user's desktop into a folder called 'model'.
 
 ### `model_predict.py`
 
@@ -66,8 +62,3 @@ For example:
 ```
 python model_predict.py https://charliesfruitonline.com.au/wp-content/uploads/2017/01/apples.jpg
 ```
-
-## To Do
-
-- Look into Keras' [documentation](https://keras.io/preprocessing/image/) (`keras.preprocessing.image.flow_from_directory`) to turn binary classifier into multiclass classifier. Adjust `web_scraper.py`.
-- Utilise `ImageDataGenerator` shown used [here](https://www.learnopencv.com/image-classification-using-convolutional-neural-networks-in-keras/) to augment data.

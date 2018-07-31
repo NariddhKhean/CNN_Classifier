@@ -6,144 +6,106 @@ import shutil
 import os
 
 
-### WEB SCRAPE FUNCTION ###
-
-def web_scrape(search_terms, output_directory):
-    """ Web scrapes images from Google Images.
+class WebScrape:
+    """Builds a training and validation dataset of images from a Google Images search query.
 
     Arguments:
-        search_terms     -- Array of strings to Google Image search.
-        output_directory -- String indicating the path for web scraped images.
+    search_term -- String that represents the search query to web scrape.
     """
 
-    # Instantiate Class
-    response = google_images_download.googleimagesdownload()
+    def __init__(self, search_term):
+        self.search_term     = search_term
+        self.class_directory = os.path.join(config.data_path, search_term)
 
-    # Format Keywords
-    keywords = ','.join(search_terms)
+    def web_scrape(self):
+        """Web scrapes images into a directory of the same name as the search query."""
 
-    # Define Arguments
-    arguments = {'keywords': keywords,
-                 'limit': config.scrape_limit,
-                 'format': 'jpg',
-                 'output_directory': output_directory,
-                 'no_directory': True,
-                 'chromedriver': config.chromedriver_path}
+        # Instantiate Web Scraper
+        response = google_images_download.googleimagesdownload()
 
-    # Execute Web Scrape
-    response.download(arguments)
+        # Define Arguments
+        arguments = {'keywords': self.search_term,
+                     'limit': config.scrape_limit,
+                     'format': 'jpg',
+                     'output_directory': self.class_directory,
+                     'no_directory': True,
+                     'chromedriver': config.chromedriver_path}
 
+        # Execute Web Scrape
+        response.download(arguments)
 
-### CLEAN WEB SCRAPED DATA FUNCTION ###
+    def clean_images(self):
+        """Removes all incompatible images."""
 
-def clean_web_scraped_data(output_directory, debugging=True):
-    """ Removes all incompatible images for the neural network.
+        # Console Summary
+        print('\nDetecting incompatible images in {}...'.format(self.class_directory))
 
-    Arguments:
-        output_directory -- String indicating the path for web scraped images.
-        debugging        -- Boolean for showing summaries.
-    """
+        # Remove Incompatible Files
+        removed = 0
+        for image in os.listdir(self.class_directory):
+            if image.endswith('.jpg'):
 
-    # Debugging: Start Message
-    if debugging:
-        print('\nDetecting incompatible images in {}...'.format(output_directory))
+                # Try Opening '.jpg' Files
+                try:
+                    im = Image.open(os.path.join(self.class_directory, image))
+                    im.close()
 
-    # Remove Incompatible Files
-    removed = 0
-    for image in os.listdir(output_directory):
-        if image.endswith('.jpg'):
+                # Delete Unopenable Files
+                except(OSError):
+                    os.remove(os.path.join(self.class_directory, image))
+                    removed += 1
 
-            # Try Opening '.jpg' Files
-            try:
-                im = Image.open(os.path.join(output_directory, image))
-                im.close()
+            # Remove All Other File Types
+            else:
+                os.remove(os.path.join(self.class_directory, image))
+                removed =+1
 
-            # Delete Unopenable Files
-            except(OSError):
-                os.remove(os.path.join(output_directory, image))
-                removed += 1
-
-        # Remove All Other File Types
-        else:
-            os.remove(os.path.join(output_directory, image))
-            removed =+1
-
-    # Debugging: Count and Confirmation
-    if debugging:
+        # Console Summary
         if removed == 0:
-            print('No incompatible images detected.')
+            print('\nNo incompatible images detected.')
         elif removed == 1:
-            print('Successfully removed 1 incompatible image.')
+            print('\nSuccessfully removed 1 incompatible image.')
         else:
-            print('Successfully removed {} incompatible images.'.format(removed))
+            print('\nSuccessfully removed {} incompatible images.'.format(removed))
 
+    def divide_dataset(self):
+        """Divides images into a training and validation dataset."""
 
-### TRAINING/VALIDATION DATASET DIVISION FUNCTION ###
-
-def dataset_division(search_terms, output_directory, debugging=True):
-    """ Divides web scraped images into a training and validation dataset.
-
-    Arguements:
-        search_terms     -- Array of strings to Google Image search.
-        output_directory -- String indicating the path for web scraped images.
-        debugging        -- Boolean for showing summaries.
-    """
-
-    # Debugging: Start Message
-    if debugging:
+        # Console Summary
         print('\nMoving files into training and validation directories...')
 
-    # Create Training Directory
-    training_dir = os.path.join(config.data_path, 'training', search_terms[0])
-    os.makedirs(training_dir)
+        # Create Training Directory
+        training_directory = os.path.join(config.data_path, 'training', self.search_term)
+        os.makedirs(training_directory)
 
-    # Create Validation Directory
-    validation_dir = os.path.join(config.data_path, 'validation', search_terms[0])
-    os.makedirs(validation_dir)
+        # Create Validation Directory
+        validation_directory = os.path.join(config.data_path, 'validation', self.search_term)
+        os.makedirs(validation_directory)
 
-    # List and Count Files in Output Directory
-    files = os.listdir(output_directory)
-    file_count = len(files)
-    training_file_count = round(config.training_factor * file_count)
+        # List and Count Images in Class Directory
+        images                = os.listdir(self.class_directory)
+        images_count          = len(images)
+        training_images_count = round(config.training_factor * images_count)
 
-    # Move Training Files into Training Directories
-    for i in range(training_file_count):
-        shutil.move(os.path.join(output_directory, files[i]), training_dir)
+        # Move Training Images into Training Directory
+        for i in range(training_images_count):
+            shutil.move(os.path.join(self.class_directory, images[i]), training_directory)
 
-    # Move Validation Files into Validation Directories
-    for f in os.listdir(output_directory):
-        shutil.move(os.path.join(output_directory, f), validation_dir)
+        # Move Validation Images into Training Directory
+        for image in os.listdir(self.class_directory):
+            shutil.move(os.path.join(self.class_directory, image), validation_directory)
 
-    # Remove Empty Output Directories
-    os.rmdir(output_directory)
+        # Remove Empty Class Directories
+        os.rmdir(self.class_directory)
 
-    # Debugging: Count and Confirmation
-    if debugging:
+        # Console Summary
         print('\nSuccessfully collected {} training images, and {} validation images, labelled "{}".'
-              .format(training_file_count, file_count - training_file_count, search_terms[0]))
-
-
-### SCRAPE, CLEAN, AND DIVIDE FUNCTION ###
-
-def scrape_clean_divide(search_terms, output_directory, debugging=True):
-    """ Executes the web scrape, the cleaning, and the division.
-
-    Arguments:
-        search_terms     -- Array of strings to Google Image search.
-        output_directory -- String indicating the path for web scraped images.
-        debugging        -- Boolean for showing summaries.
-    """
-
-    # Web Scrape
-    web_scrape(search_terms, output_directory)
-
-    # Clean Web Scraped Data
-    clean_web_scraped_data(output_directory, debugging)
-
-    # Dataset Division
-    dataset_division(search_terms, output_directory, debugging)
+              .format(training_images_count, images_count - training_images_count, self.search_term))
 
 
 if __name__ == '__main__':
-    scrape_clean_divide(config.search_terms_a, config.output_dir_a)
-    scrape_clean_divide(config.search_terms_b, config.output_dir_b)
+    for search_term in config.search_terms:
+        dataset = WebScrape(search_term)
+        dataset.web_scrape()
+        dataset.clean_images()
+        dataset.divide_dataset()

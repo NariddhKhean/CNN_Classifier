@@ -4,7 +4,7 @@ import tensorflow as tf
 from keras import layers
 from keras import backend
 from keras.models import Model
-from keras.optimizers import RMSprop
+from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 
 import math
@@ -24,110 +24,109 @@ backend.set_session(tf.Session(config = tf_config))
 
 ### TRAIN AND SAVE MODEL FUNCTION ###
 
-def train_model(debugging=True):
-    """ Defines, trains and saves convolution neural network model.
-
-    Arguments:
-        debugging -- Boolean for showing summaries.
-    """
+def train_model():
+    """Defines, trains, and saves convolution neural network model."""
 
     # Define Directories
-    base_dir = config.data_path
-    training_dir = os.path.join(base_dir, 'training')
-    validation_dir = os.path.join(base_dir, 'validation')
+    base_directory       = config.data_path
+    training_directory   = os.path.join(base_directory, 'training')
+    validation_directory = os.path.join(base_directory, 'validation')
 
     # Define Training Directories
-    training_a_dir = os.path.join(training_dir, config.search_terms_a[0])
-    training_b_dir = os.path.join(training_dir, config.search_terms_b[0])
+    training_class_directories = []
+    for search_term in config.search_terms:
+        training_class_directory = os.path.join(training_directory, search_term)
+        training_class_directories.append(training_class_directory)
 
     # Define Validation Directories
-    validation_a_dir = os.path.join(validation_dir, config.search_terms_a[0])
-    validation_b_dir = os.path.join(validation_dir, config.search_terms_b[0])
+    validation_class_directories = []
+    for search_term in config.search_terms:
+        validation_class_directory = os.path.join(validation_directory, search_term)
+        validation_class_directories.append(validation_class_directory)
 
     # Define Training Image List
-    training_a_fnames = os.listdir(training_a_dir)
-    training_b_fnames = os.listdir(training_b_dir)
+    training_class_images = []
+    for training_class_directory in training_class_directories:
+        training_class_images.append(os.listdir(training_class_directory))
+
+    # Look into ResNets vs DenseNets: https://www.jeremyjordan.me/convnet-architectures/
+    # DenseNets: https://arxiv.org/pdf/1608.06993.pdf
 
     # Input Layer
-    # [150 x 150 images, and 3 colour channels]
-    img_input = layers.Input(shape = (150, 150, 3))
+    img_input = layers.Input(shape = (config.target_size, config.target_size, 3))
 
-    # Hidden Layer 1 (CONV)
-    # [16 3 x 3 filters, with 2 x 2 max-pooling]
-    x = layers.Conv2D(16, 3, activation = 'relu')(img_input)
+    x = layers.Conv2D(32, 3, activation = 'relu')(img_input)
     x = layers.MaxPooling2D(2)(x)
 
-    # Hidden Layer 2 (CONV)
-    # [32 3 x 3 filters, with 2 x 2 max-pooling]
-    x = layers.Conv2D(32, 3, activation = 'relu')(x)
-    x = layers.MaxPooling2D(2)(x)
-
-    # Hidden Layer 3 (CONV)
-    # [64 3 x 3 filters, with 2 x 2 max-pooling]
     x = layers.Conv2D(64, 3, activation = 'relu')(x)
     x = layers.MaxPooling2D(2)(x)
 
-    # Hidden Layer 4 (FULLY CON)
-    # [512 neurons]
+    x = layers.Conv2D(128, 3, activation = 'relu')(x)
+    x = layers.MaxPooling2D(2)(x)
+
     x = layers.Flatten()(x)
     x = layers.Dense(512, activation = 'relu')(x)
 
     # Output Layer
-    output = layers.Dense(1, activation = 'sigmoid')(x)
+    output = layers.Dense(len(config.search_terms), activation = 'softmax')(x)
 
     # Create Model
     model = Model(img_input, output)
 
     # Optimiser
-    model.compile(loss = 'binary_crossentropy',
-                  optimizer = RMSprop(lr = 0.001),
-                  metrics = ["acc"])
+    model.compile(loss = 'categorical_crossentropy',
+                  optimizer = Adam(lr = config.learning_rate),
+                  metrics = ['acc'])
 
     # Review Model
-    if debugging:
-        print(model.summary())
+    print(model.summary())
 
     # Preprocess Dataset
     training_datagen = ImageDataGenerator(rescale = 1. / 255)
     validation_datagen = ImageDataGenerator(rescale = 1. / 255)
 
-    # Steps per Epoch
-    training_count_min = min(len(os.listdir(training_a_dir)), len(os.listdir(training_b_dir)))
-    training_steps_per_epoch = math.floor(training_count_min / config.batch_size)
-    validation_count_min = min(len(os.listdir(validation_a_dir)), len(os.listdir(validation_b_dir)))
-    validation_steps_per_epoch = math.floor(validation_count_min / config.batch_size)
+    # Steps per Epoch for Training Data
+    training_class_image_count = []
+    for training_class_directory in training_class_directories:
+        training_image_count = len(os.listdir(os.path.join(training_directory, training_class_directory)))
+        training_class_image_count.append(training_image_count)
+    training_min_image_count = min(training_class_image_count)
+    training_steps_per_epoch = math.floor(training_min_image_count / config.batch_size)
+
+    # Steps per Epoch for Validation Data
+    validation_class_image_count = []
+    for validation_class_directory in validation_class_directories:
+        validation_image_count = len(os.listdir(os.path.join(validation_directory, validation_class_directory)))
+        validation_class_image_count.append(validation_image_count)
+    validation_min_image_count = min(validation_class_image_count)
+    validation_steps_per_epoch = math.floor(validation_min_image_count / config.batch_size)
 
     # Flow Images in Batches
-    training_generator = training_datagen.flow_from_directory(training_dir,
+    training_generator = training_datagen.flow_from_directory(training_directory,
                                                               target_size = (config.target_size, config.target_size),
-                                                              batch_size = config.batch_size,
-                                                              class_mode = 'binary')
+                                                              batch_size = config.batch_size)
 
     # Flow Validation Images in Batches
-    validation_generator = validation_datagen.flow_from_directory(validation_dir,
+    validation_generator = validation_datagen.flow_from_directory(validation_directory,
                                                                   target_size = (config.target_size, config.target_size),
-                                                                  batch_size = config.batch_size,
-                                                                  class_mode = 'binary')
+                                                                  batch_size = config.batch_size)
+
+    # TODO: Look into model.fit(... validation_split=_)
 
     # Fit Model
-    if debugging:
-        verbosity = 1
-    else:
-        verbosity = 2
     model.fit_generator(training_generator,
                         steps_per_epoch = training_steps_per_epoch,
                         epochs = config.epochs,
                         validation_data = validation_generator,
                         validation_steps = validation_steps_per_epoch,
-                        verbose = verbosity)
+                        verbose = 1)
 
     # Save Model
-    os.makedirs(config.model_dir)
-    model.save(os.path.join(config.model_dir, config.model_name))
+    os.makedirs(config.model_directory)
+    model.save(os.path.join(config.model_directory, config.model_name))
 
-    # Debugging: Summary
-    if debugging:
-        print('\nSuccessfully trained CNN for {} epochs.'.format(config.epochs))
+    # Summary
+    print('\nSuccessfully trained CNN for {} epochs.'.format(config.epochs))
 
 
 if __name__ == '__main__':
