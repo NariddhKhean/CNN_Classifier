@@ -27,7 +27,7 @@ def predict(url):
     """
 
     # Load Trained Model
-    model = load_model(os.path.join(config.model_dir, config.model_name))
+    model = load_model(os.path.join(config.model_directory, config.model_name))
 
     # Request for Image from URL
     img = Image.open(urllib.request.urlopen(url))
@@ -38,16 +38,15 @@ def predict(url):
     img = img / 255
     img = np.reshape(img, (1, config.target_size, config.target_size, 3))
 
+    # Determine Classes
+    classes = sorted(config.search_terms)
+
     # Predict
-    prediction = model.predict(img)[0][0]
+    prediction = model.predict(img)[0]
+    prediction_index = np.argmax(prediction)
 
     # Output
-    if prediction < 0.5:
-        certainty = 1 - prediction
-        print("\nPrediction: '{}' with {:.3f}% certainty.".format(config.search_terms_a[0], certainty * 100))
-    else:
-        print("\nPrediction: '{}' with {:.3f}% certainty.".format(config.search_terms_b[0], prediction * 100))
-
+    print('Prediction: {} with {:.2f}% confidence.'.format(classes[prediction_index].capitalize(), 100 * prediction[prediction_index]))
 
 if __name__ == '__main__':
     predict(sys.argv[1])
