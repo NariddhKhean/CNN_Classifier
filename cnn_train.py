@@ -18,8 +18,8 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
 # TensorFlow Backend
-tf_config = tf.ConfigProto(gpu_options = tf.GPUOptions(allow_growth = True))
-backend.set_session(tf.Session(config = tf_config))
+tf_config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True))
+backend.set_session(tf.Session(config=tf_config))
 
 
 ### TRAIN AND SAVE MODEL FUNCTION ###
@@ -49,41 +49,38 @@ def train_model():
     for training_class_directory in training_class_directories:
         training_class_images.append(os.listdir(training_class_directory))
 
-    # Look into ResNets vs DenseNets: https://www.jeremyjordan.me/convnet-architectures/
-    # DenseNets: https://arxiv.org/pdf/1608.06993.pdf
-
     # Input Layer
-    img_input = layers.Input(shape = (config.target_size, config.target_size, 3))
+    img_input = layers.Input(shape=(config.target_size, config.target_size, 3))
 
-    x = layers.Conv2D(32, 3, activation = 'relu')(img_input)
+    x = layers.Conv2D(32, 3, activation='relu')(img_input)
     x = layers.MaxPooling2D(2)(x)
 
-    x = layers.Conv2D(64, 3, activation = 'relu')(x)
+    x = layers.Conv2D(64, 3, activation='relu')(x)
     x = layers.MaxPooling2D(2)(x)
 
-    x = layers.Conv2D(128, 3, activation = 'relu')(x)
+    x = layers.Conv2D(128, 3, activation='relu')(x)
     x = layers.MaxPooling2D(2)(x)
 
     x = layers.Flatten()(x)
-    x = layers.Dense(512, activation = 'relu')(x)
+    x = layers.Dense(512, activation='relu')(x)
 
     # Output Layer
-    output = layers.Dense(len(config.search_terms), activation = 'softmax')(x)
+    output = layers.Dense(len(config.search_terms), activation='softmax')(x)
 
     # Create Model
     model = Model(img_input, output)
 
     # Optimiser
-    model.compile(loss = 'categorical_crossentropy',
-                  optimizer = Adam(lr = config.learning_rate),
-                  metrics = ['acc'])
+    model.compile(loss='categorical_crossentropy',
+                  optimizer=Adam(lr=config.learning_rate),
+                  metrics=['acc'])
 
     # Review Model
     print(model.summary())
 
     # Preprocess Dataset
-    training_datagen = ImageDataGenerator(rescale = 1. / 255)
-    validation_datagen = ImageDataGenerator(rescale = 1. / 255)
+    training_datagen = ImageDataGenerator(rescale=1. / 255)
+    validation_datagen = ImageDataGenerator(rescale=1. / 255)
 
     # Steps per Epoch for Training Data
     training_class_image_count = []
@@ -103,23 +100,21 @@ def train_model():
 
     # Flow Images in Batches
     training_generator = training_datagen.flow_from_directory(training_directory,
-                                                              target_size = (config.target_size, config.target_size),
-                                                              batch_size = config.batch_size)
+                                                              target_size=(config.target_size, config.target_size),
+                                                              batch_size=config.batch_size)
 
     # Flow Validation Images in Batches
     validation_generator = validation_datagen.flow_from_directory(validation_directory,
-                                                                  target_size = (config.target_size, config.target_size),
-                                                                  batch_size = config.batch_size)
-
-    # TODO: Look into model.fit(... validation_split=_)
+                                                                  target_size=(config.target_size, config.target_size),
+                                                                  batch_size=config.batch_size)
 
     # Fit Model
     model.fit_generator(training_generator,
-                        steps_per_epoch = training_steps_per_epoch,
-                        epochs = config.epochs,
-                        validation_data = validation_generator,
-                        validation_steps = validation_steps_per_epoch,
-                        verbose = 1)
+                        steps_per_epoch=training_steps_per_epoch,
+                        epochs=config.epochs,
+                        verbose=1,
+                        validation_data=validation_generator,
+                        validation_steps=validation_steps_per_epoch)
 
     # Save Model
     os.makedirs(config.model_directory)

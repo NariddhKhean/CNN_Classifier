@@ -38,10 +38,10 @@ To install TensorFlow, it's best to refer to their [documentation](https://www.t
 | `chromedriver_path` | Path to chromedriver.exe.                                                     |
 | `scrape_limit`      | Maximum number of images that the script will attempt to scrape.              |
 | `training_factor`   | Ratio for training images to validation images.                               |
+| `target_size`       | Target pixel width and height of training images.                             |
+| `learning_rate`     | Learning rate for training the convolutional neural network.                  |
 | `batch_size`        | Number of images within a batch.                                              |
 | `epochs`            | Number of times the model trains on each image.                               |
-| `learning_rate`     | Learning rate for training the convolutional neural network.                  |
-| `target_size`       | Target pixel width and height of training images.                             |
 | `model_dir`         | Path to directory where the trained model is saved and loaded for prediction. |
 
 ### `web_scraper.py`
