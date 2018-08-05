@@ -23,14 +23,14 @@ training_factor = 0.8
 ### CNN HYPERPARAMETERS ###
 
 # Input Images
-target_size = 164
+target_size = 76
 
 # Adam Optimiser
 learning_rate = 0.001
 
 # Training
 batch_size = 16
-epochs = 16
+epochs = 32
 
 # Trained Model
 model_directory = os.path.join(user_path, 'Documents', 'Data', 'model')

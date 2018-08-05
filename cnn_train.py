@@ -6,6 +6,7 @@ from keras import backend
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
+from keras.callbacks import TensorBoard
 
 import math
 import os
@@ -53,16 +54,16 @@ def train_model():
     img_input = layers.Input(shape=(config.target_size, config.target_size, 3))
 
     x = layers.Conv2D(32, 3, activation='relu')(img_input)
+    x = layers.Conv2D(32, 3, activation='relu')(x)
     x = layers.MaxPooling2D(2)(x)
 
     x = layers.Conv2D(64, 3, activation='relu')(x)
-    x = layers.MaxPooling2D(2)(x)
-
-    x = layers.Conv2D(128, 3, activation='relu')(x)
+    x = layers.Conv2D(64, 3, activation='relu')(x)
     x = layers.MaxPooling2D(2)(x)
 
     x = layers.Flatten()(x)
-    x = layers.Dense(512, activation='relu')(x)
+    x = layers.Dense(256, activation='relu')(x)
+    x = layers.Dense(64, activation='relu')(x)
 
     # Output Layer
     output = layers.Dense(len(config.search_terms), activation='softmax')(x)
@@ -78,9 +79,13 @@ def train_model():
     # Review Model
     print(model.summary())
 
-    # Preprocess Dataset
-    training_datagen = ImageDataGenerator(rescale=1. / 255)
-    validation_datagen = ImageDataGenerator(rescale=1. / 255)
+    # Generate Image Data
+    training_datagen = ImageDataGenerator(rescale=1./255,
+                                          horizontal_flip=True,
+                                          rotation_range=30)
+    validation_datagen = ImageDataGenerator(rescale=1./255,
+                                            horizontal_flip=True,
+                                            rotation_range=30)
 
     # Steps per Epoch for Training Data
     training_class_image_count = []
@@ -108,11 +113,17 @@ def train_model():
                                                                   target_size=(config.target_size, config.target_size),
                                                                   batch_size=config.batch_size)
 
+    # Setting Up TensorBoard Callback
+    tensorboard = TensorBoard(batch_size=config.batch_size,
+                              write_grads=True,
+                              write_images=True)
+
     # Fit Model
     model.fit_generator(training_generator,
                         steps_per_epoch=training_steps_per_epoch,
                         epochs=config.epochs,
                         verbose=1,
+                        callbacks=[tensorboard],
                         validation_data=validation_generator,
                         validation_steps=validation_steps_per_epoch)
 
