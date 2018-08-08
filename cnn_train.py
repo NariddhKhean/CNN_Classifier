@@ -53,17 +53,25 @@ def train_model():
     # Input Layer
     img_input = layers.Input(shape=(config.target_size, config.target_size, 3))
 
-    x = layers.Conv2D(32, 3, activation='relu')(img_input)
-    x = layers.Conv2D(32, 3, activation='relu')(x)
+    x = layers.Conv2D(32, 3)(img_input)
+    x = layers.LeakyReLU(alpha=0.01)(x)
     x = layers.MaxPooling2D(2)(x)
 
-    x = layers.Conv2D(64, 3, activation='relu')(x)
-    x = layers.Conv2D(64, 3, activation='relu')(x)
+    x = layers.Conv2D(64, 3)(x)
+    x = layers.LeakyReLU(alpha=0.01)(x)
+    x = layers.MaxPooling2D(2)(x)
+
+    x = layers.Conv2D(128, 3)(x)
+    x = layers.LeakyReLU(alpha=0.01)(x)
     x = layers.MaxPooling2D(2)(x)
 
     x = layers.Flatten()(x)
-    x = layers.Dense(256, activation='relu')(x)
-    x = layers.Dense(64, activation='relu')(x)
+
+    x = layers.Dense(128)(x)
+    x = layers.LeakyReLU(alpha=0.01)(x)
+
+    x = layers.Dense(32)(x)
+    x = layers.LeakyReLU(alpha=0.01)(x)
 
     # Output Layer
     output = layers.Dense(len(config.search_terms), activation='softmax')(x)
@@ -82,10 +90,10 @@ def train_model():
     # Generate Image Data
     training_datagen = ImageDataGenerator(rescale=1./255,
                                           horizontal_flip=True,
-                                          rotation_range=30)
+                                          rotation_range=15)
     validation_datagen = ImageDataGenerator(rescale=1./255,
                                             horizontal_flip=True,
-                                            rotation_range=30)
+                                            rotation_range=15)
 
     # Steps per Epoch for Training Data
     training_class_image_count = []
@@ -114,9 +122,7 @@ def train_model():
                                                                   batch_size=config.batch_size)
 
     # Setting Up TensorBoard Callback
-    tensorboard = TensorBoard(batch_size=config.batch_size,
-                              write_grads=True,
-                              write_images=True)
+    tensorboard = TensorBoard()
 
     # Fit Model
     model.fit_generator(training_generator,
