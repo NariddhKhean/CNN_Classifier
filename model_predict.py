@@ -6,14 +6,8 @@ import json
 import sys
 import os
 
+import _dirs
 
-# Directories
-BASE_DIR = os.path.join(
-    os.path.expanduser('~'),
-    'Documents',
-    'CNN_Classifier'
-)
-MODEL_DIR = os.path.join(BASE_DIR, 'models')
 
 def import_config(config_path):
     with open(config_path) as f:
@@ -29,7 +23,7 @@ def predict(url, config):
 
     # Load Trained Model
     model = tf.keras.models.load_model(
-        os.path.join(MODEL_DIR, 'model.h5')
+        os.path.join(_dirs.MODEL_DIR, 'model.h5')
     )
 
     # Request for Image from URL
@@ -53,5 +47,5 @@ def predict(url, config):
 
 if __name__ == '__main__':
 
-    config = import_config('.\config.json')
+    config = import_config('.\_config.json')
     predict(sys.argv[1], config)

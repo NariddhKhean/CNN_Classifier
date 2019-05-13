@@ -4,23 +4,8 @@ import shutil
 import json
 import os
 
+import _dirs
 
-# Directories
-BASE_DIR = os.path.join(
-    os.path.expanduser('~'),
-    'Documents',
-    'CNN_Classifier'
-)
-DATA_DIR  = os.path.join(BASE_DIR, 'data')
-
-# Chromedriver
-CHROMEDRIVER_PATH = os.path.join(
-    os.path.expanduser('~'),
-    'AppData',
-    'Local',
-    'Chromedriver',
-    'chromedriver.exe'
-)
 
 class WebScrape:
     """Builds a training and validation dataset of images from a Google Images search query.
@@ -31,7 +16,7 @@ class WebScrape:
 
     def __init__(self, search_term, config):
         self.search_term     = search_term
-        self.class_directory = os.path.join(DATA_DIR, search_term)
+        self.class_directory = os.path.join(_dirs.DATA_DIR, search_term)
         self.config          = config
 
     def web_scrape(self):
@@ -46,7 +31,7 @@ class WebScrape:
                      'format': 'jpg',
                      'output_directory': self.class_directory,
                      'no_directory': True,
-                     'chromedriver': CHROMEDRIVER_PATH}
+                     'chromedriver': _dirs.CHROMEDRIVER_PATH}
 
         # Execute Web Scrape
         response.download(arguments)
@@ -92,11 +77,11 @@ class WebScrape:
         print('\nMoving files into training and validation directories...')
 
         # Create Training Directory
-        training_directory = os.path.join(DATA_DIR, 'training', self.search_term)
+        training_directory = os.path.join(_dirs.DATA_DIR, 'training', self.search_term)
         os.makedirs(training_directory)
 
         # Create Validation Directory
-        validation_directory = os.path.join(DATA_DIR, 'validation', self.search_term)
+        validation_directory = os.path.join(_dirs.DATA_DIR, 'validation', self.search_term)
         os.makedirs(validation_directory)
 
         # List and Count Images in Class Directory
@@ -127,7 +112,7 @@ def import_config(config_path):
 
 if __name__ == '__main__':
 
-    config = import_config('.\config.json')
+    config = import_config('.\_config.json')
 
     for search_term in config['search_terms']:
         dataset = WebScrape(search_term, config)

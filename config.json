@@ -1,8 +1,0 @@
-{
-    "search_terms": ["apples fruit", "oranges fruit", "bananas fruit"],
-    "scrape_limit": 100,
-    "training_factor": 0.7,
-    "target_size": 142,
-    "batch_size": 8,
-    "epochs": 16
-}

@@ -4,27 +4,17 @@ import json
 import sys
 import os
 
-# Directories
-BASE_DIR = os.path.join(
-    os.path.expanduser('~'),
-    'Documents',
-    'CNN_Classifier'
-)
-DATA_DIR  = os.path.join(BASE_DIR, 'data')
-MODEL_DIR = os.path.join(BASE_DIR, 'models')
-
-TRAINING_DIR   = os.path.join(DATA_DIR, 'training')
-VALIDATION_DIR = os.path.join(DATA_DIR, 'validation')
+import _dirs
 
 def check_directories():
-    dirs = [BASE_DIR, DATA_DIR, MODEL_DIR]
+    dirs = [_dirs.BASE_DIR, _dirs.DATA_DIR, _dirs.MODEL_DIR]
     for directory in dirs:
         if not os.path.isdir(directory):
             os.makedirs(directory)
-    if os.listdir(TRAINING_DIR) != os.listdir(VALIDATION_DIR):
+    if os.listdir(_dirs.TRAINING_DIR) != os.listdir(_dirs.VALIDATION_DIR):
         sys.exit('Training classes does not match validation classes.')
     else:
-        return os.listdir(TRAINING_DIR)
+        return os.listdir(_dirs.TRAINING_DIR)
 
 def import_config(config_path):
     with open(config_path) as f:
@@ -94,30 +84,30 @@ def train_model(config, labels):
     """Defines, trains, and saves convolution neural network model."""
 
     # Image Generators
-    training_generator   = flow_from_directory(TRAINING_DIR, config)
-    validation_generator = flow_from_directory(VALIDATION_DIR, config)
+    training_generator   = flow_from_directory(_dirs.TRAINING_DIR, config)
+    validation_generator = flow_from_directory(_dirs.VALIDATION_DIR, config)
 
     # Fit Model
     model = compile_model(config, labels)
     model.fit_generator(
         training_generator,
-        steps_per_epoch=steps_per_epoch(TRAINING_DIR, config, labels),
+        steps_per_epoch=steps_per_epoch(_dirs.TRAINING_DIR, config, labels),
         epochs=config['epochs'],
         verbose=1,
         validation_data=validation_generator,
-        validation_steps=steps_per_epoch(VALIDATION_DIR, config, labels)
+        validation_steps=steps_per_epoch(_dirs.VALIDATION_DIR, config, labels)
     )
 
     # Save Model
-    if not os.path.isdir(MODEL_DIR):
-        os.makedirs(MODEL_DIR)
-    model.save(os.path.join(MODEL_DIR, 'model.h5'))
+    if not os.path.isdir(_dirs.MODEL_DIR):
+        os.makedirs(_dirs.MODEL_DIR)
+    model.save(os.path.join(_dirs.MODEL_DIR, 'model.h5'))
     print('\nSuccessfully trained model.h5 for {} epochs.'.format(config['epochs']))
 
 
 if __name__ == '__main__':
 
     labels = check_directories()
-    config = import_config('.\config.json')
+    config = import_config('.\_config.json')
 
     train_model(config, labels)
