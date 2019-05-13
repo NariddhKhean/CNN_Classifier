@@ -13,14 +13,14 @@ Web scrape images based on a lists of _Google Images_ search queries, to generat
 The main component of the web scraper is _[Google Images Download](https://github.com/hardikvasa/google-images-download)_; a small, ready-to-run program that downloads images from a Google Images search from keywords.
 > Note: If you would like to scrape more than 100 images per keyword, you'll also need to install _[Selenium](https://www.seleniumhq.org/)_ and _[Chromedriver](http://chromedriver.chromium.org/)_.
 
-The deep convolutional neural network was developed using _[Keras](https://keras.io/)_, a high-level neural network API, with _[TensorFlow](https://www.tensorflow.org/)_ as its backend.
+The deep convolutional neural network was developed using _[TensorFlow](https://www.tensorflow.org/)_.
 
-To install _Google Images Download_ and _Keras_, you can use pip:
+To install _Google Images Download_ and TensorFlow, you can use pip:
 ```
 pip install google_images_download
 ```
 ```
-pip install keras
+pip install tensorflow
 ```
 Alternatively, you can view their respective documentation for different installation methods and troubleshooting.
 
@@ -29,20 +29,16 @@ To install TensorFlow, it's best to refer to their [documentation](https://www.t
 
 ## Usage
 
-### `config.py`
+### `config.json`
 
 | Variable            | Function                                                                      |
 | ------------------- | ----------------------------------------------------------------------------- |
 | `search_terms`      | List of search terms to web scrape.                                           |
-| `data_path`         | Path to directory for web scraped images.                                     |
-| `chromedriver_path` | Path to chromedriver.exe.                                                     |
 | `scrape_limit`      | Maximum number of images that the script will attempt to scrape.              |
 | `training_factor`   | Ratio for training images to validation images.                               |
 | `target_size`       | Target pixel width and height of training images.                             |
-| `learning_rate`     | Learning rate for training the convolutional neural network.                  |
 | `batch_size`        | Number of images within a batch.                                              |
 | `epochs`            | Number of times the model trains on each image.                               |
-| `model_dir`         | Path to directory where the trained model is saved and loaded for prediction. |
 
 ### `web_scraper.py`
 
